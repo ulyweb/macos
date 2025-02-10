@@ -1,7 +1,6 @@
 ## It's about setting up **custom SSL certificates** for **Python’s pip and other tools** on your MacBook Pro. 
-### It ensures that your Python and other command-line applications trust a specific Certificate Authority (CA) bundle.
+#### It ensures that your Python and other command-line applications trust a specific Certificate Authority (CA) bundle.
 
----
 
 ## **What This Means**
 - The file **`MY-python-cacert-bundle.pem`** is a **custom SSL certificate bundle**.
