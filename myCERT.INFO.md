@@ -95,3 +95,37 @@ source ~/.bashrc
 2. This setup ensures that `pip`, `requests`, `curl`, and AWS tools can securely communicate over HTTPS.
 
 🚀 After following these steps, your **pip and related tools** should now work properly with the provided **custom SSL certificate**!
+
+
+Yes, that's completely fine! 🎯  
+
+On macOS (especially with the M3 chip), `pip` may refer to an older Python version or may not be installed globally. Instead, **`pip3`** is the correct command to use for managing packages with **Python 3**.  
+
+### **What to Do Instead?**  
+Since `pip3` works but `pip` does not, use this command instead for Step 3:  
+
+```sh
+pip3 config set global.cert ~/certs/Intuitive-python-cacert-bundle.pem
+```
+
+This ensures **pip3** (which is associated with Python 3) uses the custom SSL certificate.  
+
+### **Do I Need to Fix pip?**  
+Not necessarily! As long as `pip3` is working, you're good to go. But if you want `pip` to work as well, you can check if it’s installed by running:  
+
+```sh
+which pip
+```
+or  
+```sh
+python3 -m ensurepip --default-pip
+```
+
+If `pip` is missing, you can create an alias in your `~/.zshrc` or `~/.bashrc` file:  
+
+```sh
+echo 'alias pip="pip3"' >> ~/.zshrc
+source ~/.zshrc
+```
+
+Now, `pip` will behave like `pip3` whenever you use it.
