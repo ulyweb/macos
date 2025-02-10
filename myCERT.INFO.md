@@ -129,3 +129,96 @@ source ~/.zshrc
 ```
 
 Now, `pip` will behave like `pip3` whenever you use it.
+
+#
+
+> [!NOTE]
+> # 🎯 The error **"CERTIFICATE_VERIFY_FAILED: unable to get local issuer certificate"** means that your system is having trouble verifying the SSL certificate when trying to download the Google Cloud SDK.  
+This is likely due to the custom certificate setup you applied earlier. The **Google Cloud SDK** installer might not be picking up the correct CA certificate bundle.  
+
+---
+
+### **🔧 Fix: Ensure the System Trusts the Right Certificates**  
+
+#### **1️⃣ Update Python’s SSL Certificates**  
+Since **Homebrew Python** manages its own SSL certificates, you need to update them manually:  
+
+Run this command in your **Terminal**:  
+
+```sh
+/Applications/Python\ 3.11/Install\ Certificates.command
+```
+
+(Adjust the version `3.11` if you're using a different one.)
+
+If you installed Python via Homebrew, use:  
+
+```sh
+/opt/homebrew/bin/python3 -m pip install --upgrade certifi
+```
+
+Then, set Python to use the updated certificates:  
+
+```sh
+export SSL_CERT_FILE=$(python3 -m certifi)
+```
+
+---
+
+#### **2️⃣ Manually Set Environment Variables for Google Cloud SDK**  
+The Google Cloud SDK might not be recognizing your certificate settings. Try explicitly setting them:  
+
+```sh
+export REQUESTS_CA_BUNDLE=~/certs/Intuitive-python-cacert-bundle.pem
+export SSL_CERT_FILE=~/certs/Intuitive-python-cacert-bundle.pem
+export CURL_CA_BUNDLE=~/certs/Intuitive-python-cacert-bundle.pem
+```
+
+Then retry the installation:  
+
+```sh
+brew install google-cloud-sdk
+```
+
+---
+
+#### **3️⃣ Verify OpenSSL and Homebrew Certificates**  
+Homebrew has its own **OpenSSL** and CA certificates. Ensure they're installed and up to date:  
+
+```sh
+brew install openssl
+brew install ca-certificates
+brew update && brew upgrade
+```
+
+After updating, link the correct CA bundle:  
+
+```sh
+export SSL_CERT_FILE=/opt/homebrew/etc/ca-certificates/cert.pem
+export REQUESTS_CA_BUNDLE=/opt/homebrew/etc/ca-certificates/cert.pem
+```
+
+Then retry:  
+
+```sh
+brew install google-cloud-sdk
+```
+
+---
+
+#### **4️⃣ Restart the Terminal & Try Again**
+If the above steps don’t work right away, restart the **Terminal**, then try installing again:
+
+```sh
+brew install google-cloud-sdk
+```
+
+---
+
+### **✅ Summary: What We Did**
+1. **Updated Python's SSL certificates** (which pip and requests use).  
+2. **Set environment variables** so Python and cURL use the correct certificate.  
+3. **Ensured Homebrew’s OpenSSL & certificates were updated**.  
+4. **Restarted the terminal and retried the installation**.  
+
+This should resolve the issue.
