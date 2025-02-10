@@ -44,7 +44,7 @@ end if
 ````
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 brew --version
-brew install python
+
 ````
 
 ````
@@ -58,3 +58,16 @@ echo >> /Users/userHERE/.zprofile
     eval "$(/opt/homebrew/bin/brew shellenv)"
 ````
 
+### Install pip (Python Package Manager)
+
+````
+brew install python
+pip3 --version
+
+or
+Option 2: Install pip Manually
+If you want to install pip without Homebrew, run:
+
+curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+python3 get-pip.py
+````
