@@ -38,3 +38,23 @@ else
 	display dialog "Jamf enrollment canceled." buttons {"OK"} default button "OK" with title "enroll Jamf"
 end if
 ````
+
+#### How to install Homebrew & install pip (Python Package Manager)
+
+````
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+brew --version
+brew install python
+````
+
+````
+echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zshrc
+source ~/.zshrc
+
+or
+
+echo >> /Users/userHERE/.zprofile
+    echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> /Users/userHERE/.zprofile
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+````
+
