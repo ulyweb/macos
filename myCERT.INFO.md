@@ -1,4 +1,4 @@
-## It's about setting up **custom SSL certificates** for **Python’s pip and other tools** on your MacBook Pro. It ensures that your Python and other command-line applications trust a specific Certificate Authority (CA) bundle.
+### It's about setting up **custom SSL certificates** for **Python’s pip and other tools** on your MacBook Pro. It ensures that your Python and other command-line applications trust a specific Certificate Authority (CA) bundle.
 
 
 ## **What This Means**
