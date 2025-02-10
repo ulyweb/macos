@@ -97,7 +97,7 @@ source ~/.bashrc
 🚀 After following these steps, your **pip and related tools** should now work properly with the provided **custom SSL certificate**!
 
 
-Yes, that's completely fine! 🎯  
+🎯  
 
 On macOS (especially with the M3 chip), `pip` may refer to an older Python version or may not be installed globally. Instead, **`pip3`** is the correct command to use for managing packages with **Python 3**.  
 
