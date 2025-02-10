@@ -133,7 +133,8 @@ Now, `pip` will behave like `pip3` whenever you use it.
 #
 
 > [!NOTE]
-> # 🎯 The error **"CERTIFICATE_VERIFY_FAILED: unable to get local issuer certificate"** means that your system is having trouble verifying the SSL certificate when trying to download the Google Cloud SDK.  
+> # 🎯The error **"CERTIFICATE_VERIFY_FAILED: unable to get local issuer certificate"** means that your system is having trouble verifying the SSL certificate when trying to download the Google Cloud SDK.  
+
 This is likely due to the custom certificate setup you applied earlier. The **Google Cloud SDK** installer might not be picking up the correct CA certificate bundle.  
 
 ---
@@ -169,9 +170,9 @@ export SSL_CERT_FILE=$(python3 -m certifi)
 The Google Cloud SDK might not be recognizing your certificate settings. Try explicitly setting them:  
 
 ```sh
-export REQUESTS_CA_BUNDLE=~/certs/Intuitive-python-cacert-bundle.pem
-export SSL_CERT_FILE=~/certs/Intuitive-python-cacert-bundle.pem
-export CURL_CA_BUNDLE=~/certs/Intuitive-python-cacert-bundle.pem
+export REQUESTS_CA_BUNDLE=~/certs/MY-python-cacert-bundle.pem
+export SSL_CERT_FILE=~/certs/MY-python-cacert-bundle.pem
+export CURL_CA_BUNDLE=~/certs/MY-python-cacert-bundle.pem
 ```
 
 Then retry the installation:  
