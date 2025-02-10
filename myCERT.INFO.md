@@ -91,7 +91,7 @@ source ~/.bashrc
 ---
 
 ## **Why This is Needed**
-1. Some networks (corporate or custom setups) require **custom SSL certificates** to verify connections.
+1. Some networks or custom setups require **custom SSL certificates** to verify connections.
 2. This setup ensures that `pip`, `requests`, `curl`, and AWS tools can securely communicate over HTTPS.
 
-After following these steps, your **pip and related tools** should now work properly with the provided **custom SSL certificate**! 🚀 Let me know if you have any issues!
+🚀 After following these steps, your **pip and related tools** should now work properly with the provided **custom SSL certificate**!
