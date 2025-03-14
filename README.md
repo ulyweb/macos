@@ -109,3 +109,32 @@ umount ~/mountpoint
 
 Remember to replace "mountpoint" with the actual directory name you used.
 
+To install an installer .pkg file using the macOS terminal, you can use the following command:
+
+```bash
+sudo installer -pkg /path/to/your/package.pkg -target /
+```
+
+Replace "/path/to/your/package.pkg" with the actual path to your .pkg file. This command will install the package to the root directory (/).
+
+If you want to install the package without entering your password each time, you can use:
+
+```bash
+echo "your_admin_password" | sudo -S installer -pkg /path/to/your/package.pkg -target /
+```
+
+However, be cautious with this method as it may expose your password in the command history.
+
+For a more secure approach, you can also use:
+
+```bash
+sudo installer -allowUntrusted -verboseR -pkg /path/to/your/package.pkg -target /
+```
+
+This command allows for untrusted packages and provides verbose output during installation.
+
+Remember that you'll need administrator privileges to install most .pkg files. If you don't have admin access, you can install to your home directory using:
+
+```bash
+installer -pkg /path/to/your/package.pkg -target ~
+```
