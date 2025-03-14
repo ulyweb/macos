@@ -67,3 +67,45 @@ If you want to install pip without Homebrew, run:
 curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
 python3 get-pip.py
 ````
+
+
+To map or access a network folder or SMB share in macOS using the terminal, you can use the following methods:
+
+1. Using the `mount` command:
+
+```bash
+mkdir ~/mountpoint
+mount -t smbfs //username@server/share ~/mountpoint
+```
+
+Replace "username", "server", "share", and "mountpoint" with your specific details[4].
+
+2. Using the `open` command:
+
+```bash
+open "smb://username@server/share"
+```
+
+This method will open the network share in Finder[1].
+
+3. For more complex setups, especially if connecting to an Active Directory domain:
+
+```bash
+mount_smbfs //'DOMAIN;username'@server.example.com/share ~/mountpoint
+```
+
+Replace "DOMAIN", "username", "server.example.com", "share", and "mountpoint" as needed[4].
+
+When using these commands:
+- You'll be prompted for a password if required.
+- Ensure you have the necessary permissions to access the share.
+- The mountpoint directory should exist before mounting.
+
+To unmount the share:
+
+```bash
+umount ~/mountpoint
+```
+
+Remember to replace "mountpoint" with the actual directory name you used.
+
