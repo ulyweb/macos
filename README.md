@@ -78,7 +78,7 @@ mkdir ~/mountpoint
 mount -t smbfs //username@server/share ~/mountpoint
 ```
 
-Replace "username", "server", "share", and "mountpoint" with your specific details[4].
+Replace "username", "server", "share", and "mountpoint" with your specific details.
 
 2. Using the `open` command:
 
@@ -86,7 +86,7 @@ Replace "username", "server", "share", and "mountpoint" with your specific detai
 open "smb://username@server/share"
 ```
 
-This method will open the network share in Finder[1].
+This method will open the network share in Finder.
 
 3. For more complex setups, especially if connecting to an Active Directory domain:
 
@@ -94,7 +94,7 @@ This method will open the network share in Finder[1].
 mount_smbfs //'DOMAIN;username'@server.example.com/share ~/mountpoint
 ```
 
-Replace "DOMAIN", "username", "server.example.com", "share", and "mountpoint" as needed[4].
+Replace "DOMAIN", "username", "server.example.com", "share", and "mountpoint" as needed.
 
 When using these commands:
 - You'll be prompted for a password if required.
