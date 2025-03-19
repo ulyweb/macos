@@ -23,9 +23,23 @@ end writeLog
 
 -- Function to get Wi-Fi info
 on getWifiInfo()
-    set ssid to do shell script "networksetup -getairportnetwork en0 | awk -F': ' '{print $2}'"
-    set signal to do shell script "system_profiler SPAirPortDataType | awk '/agrCtlRSSI/ {print $2}'"
-    set linkSpeed to do shell script "system_profiler SPAirPortDataType | awk '/lastTxRate/ {print $2}'"
+    try
+        set ssid to do shell script "networksetup -getairportnetwork en0 | awk -F': ' '{print $2}'"
+    on error
+        set ssid to "Unknown"
+    end try
+    
+    try
+        set signal to do shell script "system_profiler SPAirPortDataType | awk '/agrCtlRSSI/ {print $2}'"
+    on error
+        set signal to "Unknown"
+    end try
+    
+    try
+        set linkSpeed to do shell script "system_profiler SPAirPortDataType | awk '/lastTxRate/ {print $2}'"
+    on error
+        set linkSpeed to "Unknown"
+    end try
     
     return {SSID:ssid, Signal:signal, LinkSpeed:linkSpeed}
 end getWifiInfo
