@@ -23,7 +23,6 @@ end writeLog
 
 -- Function to get Wi-Fi info
 on getWifiInfo()
-    set wifiOutput to do shell script "networksetup -getinfo Wi-Fi"
     set ssid to do shell script "networksetup -getairportnetwork en0 | awk -F': ' '{print $2}'"
     set signal to do shell script "system_profiler SPAirPortDataType | awk '/agrCtlRSSI/ {print $2}'"
     set linkSpeed to do shell script "system_profiler SPAirPortDataType | awk '/lastTxRate/ {print $2}'"
