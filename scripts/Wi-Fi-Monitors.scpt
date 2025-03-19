@@ -1,6 +1,3 @@
-Sure, I can help you convert your PowerShell script to an AppleScript for macOS. Here's the equivalent script in AppleScript:
-
-```applescript
 -- Check interval in seconds
 set interval to 2
 set pingTarget to "google.com"
@@ -98,6 +95,3 @@ repeat
     
     delay interval
 end repeat
-```
-
-This script will monitor your Wi-Fi connectivity on macOS and log the results similarly to your PowerShell script. You can copy this code into the Script Editor on macOS and save it as a `.scpt` file. Let me know if you need any further assistance!
