@@ -60,15 +60,15 @@ repeat
     set currentWifi to getWifiInfo()
     
     if currentWifi's SSID is "Hidden SSID" then
-        display notification "Connected to a hidden Wi-Fi network" with title "Wi-Fi Monitor"
+        display dialog "Connected to a hidden Wi-Fi network" buttons {"OK"} default button "OK"
         writeLog("Connected to a hidden Wi-Fi network", logFile)
     else
         if currentWifi's SSID is not currentSSID then
-            display notification "Connected to Wi-Fi: " & currentWifi's SSID with title "Wi-Fi Monitor"
+            display dialog "Connected to Wi-Fi: " & currentWifi's SSID buttons {"OK"} default button "OK"
             writeLog("Connected to Wi-Fi: " & currentWifi's SSID, logFile)
             set currentSSID to currentWifi's SSID
         else
-            display notification "Current Wi-Fi: " & currentWifi's SSID with title "Wi-Fi Monitor"
+            display dialog "Current Wi-Fi: " & currentWifi's SSID buttons {"OK"} default button "OK"
         end if
     end if
     
@@ -94,7 +94,7 @@ repeat
     end if
     
     set logMessage to "Signal Strength: " & currentWifi's Signal & " | Link Speed: " & currentWifi's LinkSpeed & " | Packet Loss: " & packetLoss & "% (Total: " & totalPings & ", Failed: " & failedPings & ") | " & pingMessage
-    display notification logMessage with title "Wi-Fi Monitor"
+    display dialog logMessage buttons {"OK"} default button "OK"
     writeLog(logMessage, logFile)
     
     delay interval
