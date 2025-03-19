@@ -15,7 +15,7 @@ do shell script "mkdir -p " & quoted form of POSIX path of logDirectory
 set logFile to logDirectory & "WiFiLog_" & (do shell script "date +%Y%m%d_%H%M%S") & ".txt"
 
 -- Function to write log
-on writeLog(message)
+on writeLog(message, logFile)
     set timestamp to do shell script "date +%Y-%m-%d\\ %H:%M:%S"
     set logMessage to timestamp & " - " & message & linefeed
     do shell script "echo " & quoted form of logMessage & " >> " & quoted form of POSIX path of logFile
@@ -55,17 +55,17 @@ end testPacketLoss
 set previousBSSID to ""
 set currentSSID to ""
 
-writeLog("Starting Wi-Fi monitoring script...")
+writeLog("Starting Wi-Fi monitoring script...", logFile)
 repeat
     set currentWifi to getWifiInfo()
     
     if currentWifi's SSID is "Hidden SSID" then
         display notification "Connected to a hidden Wi-Fi network" with title "Wi-Fi Monitor"
-        writeLog("Connected to a hidden Wi-Fi network")
+        writeLog("Connected to a hidden Wi-Fi network", logFile)
     else
         if currentWifi's SSID is not currentSSID then
             display notification "Connected to Wi-Fi: " & currentWifi's SSID with title "Wi-Fi Monitor"
-            writeLog("Connected to Wi-Fi: " & currentWifi's SSID)
+            writeLog("Connected to Wi-Fi: " & currentWifi's SSID, logFile)
             set currentSSID to currentWifi's SSID
         else
             display notification "Current Wi-Fi: " & currentWifi's SSID with title "Wi-Fi Monitor"
@@ -95,7 +95,7 @@ repeat
     
     set logMessage to "Signal Strength: " & currentWifi's Signal & " | Link Speed: " & currentWifi's LinkSpeed & " | Packet Loss: " & packetLoss & "% (Total: " & totalPings & ", Failed: " & failedPings & ") | " & pingMessage
     display notification logMessage with title "Wi-Fi Monitor"
-    writeLog(logMessage)
+    writeLog(logMessage, logFile)
     
     delay interval
 end repeat
