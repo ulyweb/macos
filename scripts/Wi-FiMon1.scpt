@@ -1,4 +1,4 @@
--- Check interval in seconds
+-- Check interval in seconds!!!!
 set interval to 2
 set pingTarget to "google.com"
 
