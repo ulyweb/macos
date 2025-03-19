@@ -4,7 +4,7 @@ use scripting additions
 set wifiInterface to current application's CWWiFiClient's sharedWiFiClient()'s interface()
 
 if wifiInterface is not missing value then
-    set ssid to wifiInterface's ssid() as text
+    set ssid to (wifiInterface's ssid() as text) or "Not Available"
     set signalStrength to wifiInterface's rssiValue() as integer
     set linkSpeed to wifiInterface's transmitRate() as integer
     
