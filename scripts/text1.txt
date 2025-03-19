@@ -1,0 +1,63 @@
+function Show-WifiDiagnostics {
+    # Define the report path
+    $reportPath = "$HOME/Desktop/WifiReport.txt"
+
+    # Run the airport scan command
+    Write-Host "Generating Wi-Fi diagnostics report..."
+    /System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -s | Out-File -Append -FilePath $reportPath
+    system_profiler SPNetworkDataType | Out-File -Append -FilePath $reportPath
+    system_profiler SPAirPortDataType | Out-File -Append -FilePath $reportPath
+    
+    # Check if the report exists before opening
+    if (Test-Path $reportPath) {
+        Write-Host "Opening Wi-Fi diagnostics report..."
+        Start-Process "open" -ArgumentList $reportPath
+    } else {
+        Write-Host "Wi-Fi diagnostics report not found at expected location: $reportPath" -ForegroundColor Red
+    }
+}
+
+# Call the function
+Show-WifiDiagnostics
+
+
+
+
+
+new one
+wifi_report.sh
+
+#!/bin/bash
+
+# Define the report path
+REPORT_PATH="$HOME/Desktop/WifiReport.txt"
+
+# Generate Wi-Fi diagnostics report
+echo "Generating Wi-Fi diagnostics report..." > "$REPORT_PATH"
+system_profiler SPNetworkDataType >> "$REPORT_PATH"
+system_profiler SPAirPortDataType >> "$REPORT_PATH"
+/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -s >> "$REPORT_PATH"
+
+# Open the report
+if [ -f "$REPORT_PATH" ]; then
+    echo "Opening Wi-Fi diagnostics report..."
+    open "$REPORT_PATH"
+else
+    echo "Wi-Fi diagnostics report not found."
+fi
+
+
+
+.scpt
+
+set reportPath to POSIX path of (path to desktop folder) & "WifiReport.txt"
+
+do shell script "
+echo 'Generating Wi-Fi diagnostics report...' > " & quoted form of reportPath & ";
+/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -s >> " & quoted form of reportPath & ";
+system_profiler SPNetworkDataType >> " & quoted form of reportPath & ";
+system_profiler SPAirPortDataType >> " & quoted form of reportPath & ";
+open " & quoted form of reportPath
+"
+
+display dialog "Wi-Fi diagnostics report has been generated and opened!" buttons {"OK"} default button "OK"
