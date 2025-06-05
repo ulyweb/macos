@@ -141,7 +141,7 @@ installer -pkg /path/to/your/package.pkg -target ~
 
 >[!Note]
 >### How to download Chrome via terminal command.
-> >#### ***Open Terminal, then type the command below:***
+> >#### ***Open Terminal, then type or copy&pasta the command below:***
 >
 >````
 >cd Downloads 
