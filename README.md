@@ -138,3 +138,13 @@ Remember that you'll need administrator privileges to install most .pkg files. I
 ```bash
 installer -pkg /path/to/your/package.pkg -target ~
 ```
+
+>[!Note]
+>### How to download Chrome via terminal command.
+> >#### ***Open Terminal, then type the command below:***
+>
+>````
+>cd Downloads 
+>pwd
+>curl https://dl.google.com/chrome/mac/universal/stable/CHFA/googlechrome.dmg --output ./googlechrome.dmg
+>````
