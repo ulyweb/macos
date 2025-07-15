@@ -188,4 +188,41 @@ scutil --get HostName
 
 ---
  
+# Change Hostname on macOS via Terminal
 
+To change your Mac's hostname using the Terminal, use the following command:
+
+```bash
+sudo scutil --set HostName NEW_HOSTNAME
+```
+Replace `NEW_HOSTNAME` with your desired hostname.
+
+For example:
+```bash
+sudo scutil --set HostName mynewmac
+```
+You will be prompted to enter your administrator password.
+
+## Additional Useful Commands
+
+- **Set LocalHostName** (used for Bonjour services):
+  ```bash
+  sudo scutil --set LocalHostName NEW_LOCALHOSTNAME
+  ```
+
+- **Set ComputerName** (the name that appears on the Mac and in the Finder):
+  ```bash
+  sudo scutil --set ComputerName NEW_COMPUTERNAME
+  ```
+
+## Check Current Hostname
+
+To verify your hostname after changing it, use:
+```bash
+scutil --get HostName
+```
+
+> Changing the hostname may require restarting your Mac or logging out and back in for all changes to be fully applied.
+
+---
+ 
