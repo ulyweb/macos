@@ -337,3 +337,42 @@ Look for `admin` in the `groups=` list (usually group `80`).
 
 
 
+## ✅ Correct `sysadminctl` Syntax (with `-fullName`)
+
+Here’s the corrected command:
+
+```bash
+sudo sysadminctl -addUser testlocal -fullName "Test Local" -password MySecurePass123
+```
+
+✅ Output (if successful) should not include the "Invalid option" error.
+
+---
+
+## 📌 Key Notes:
+
+* **Capitalization matters** in `sysadminctl` flags:
+
+  * `-fullName` ✅
+  * `-fullname` ❌ (this caused the error you saw)
+
+* You can add optional arguments like:
+
+  * `-admin` to make them admin
+  * `-home /Users/testlocal` to specify home folder
+  * `-hint "password hint"` if desired
+
+---
+
+## 🧪 Test It
+
+After correcting the command, verify:
+
+```bash
+dscl . -read /Users/testlocal
+```
+
+And check if it was created properly and can log in.
+
+---
+
