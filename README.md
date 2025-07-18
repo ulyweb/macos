@@ -2,11 +2,12 @@
 macOS information
 
 ````
-sudo /usr/local/jamf/bin/Jamf RemoveMDMProfile && sudo /usr/local/jamf/bin/Jamf removeFramework && sudo Reboot
+sudo /usr/local/jamf/bin/jamf removeMDMProfile && sudo /usr/local/jamf/bin/jamf removeFramework && sleep 30 && sudo reboot
+
 ````
 
 ````
-sudo profiles renew -type enrollment && sudo jamf recon && jamf policy && sudo Reboot
+sudo profiles renew -type enrollment && sudo jamf recon && jamf policy && sleep 30 && sudo Reboot
 ````
 
 
