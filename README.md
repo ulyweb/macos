@@ -225,4 +225,115 @@ scutil --get HostName
 > Changing the hostname may require restarting your Mac or logging out and back in for all changes to be fully applied.
 
 ---
- 
+
+
+This issue stems from a **bug or undocumented behavior** in `sysadminctl` on recent macOS versions (particularly Sonoma and later). Even though `-fullName` is documented, it currently behaves incorrectly **when passed inline** with `-addUser`.
+
+---
+
+## ✅ Solution: Use `dscl` Instead to Create User Properly
+
+You can still create a full-featured user (with GUI login support) and grant SecureToken access — just use the more reliable `dscl` approach, then assign SecureToken.
+
+---
+
+### 🔧 Step-by-Step: Add User via `dscl` and Grant SecureToken
+
+### **1. Create Local User Account via `dscl`**
+
+```bash
+sudo dscl . -create /Users/testlocal
+sudo dscl . -create /Users/testlocal UserShell /bin/zsh
+sudo dscl . -create /Users/testlocal RealName "Test Local"
+sudo dscl . -create /Users/testlocal UniqueID "505"
+sudo dscl . -create /Users/testlocal PrimaryGroupID 20
+sudo dscl . -create /Users/testlocal NFSHomeDirectory /Users/testlocal
+sudo dscl . -passwd /Users/testlocal MySecurePass123
+sudo createhomedir -c -u testlocal > /dev/null
+```
+
+> ✅ Pick a `UniqueID` that doesn't conflict (check with `dscl . -list /Users UniqueID`).
+
+---
+
+### **2. (Optional) Make the User an Admin**
+
+```bash
+sudo dseditgroup -o edit -a testlocal -t user admin
+```
+
+---
+
+### **3. Grant SecureToken to New User**
+
+This must be done by an existing **SecureToken-enabled** admin:
+
+```bash
+sudo sysadminctl -secureTokenOn testlocal -password MySecurePass123 -adminUser EXISTINGADMIN -adminPassword EXISTINGADMINPASSWORD
+```
+
+**Example:**
+
+```bash
+sudo sysadminctl -secureTokenOn testlocal -password MySecurePass123 -adminUser johnadmin -adminPassword Secret123!
+```
+
+---
+
+### **4. (Optional) Add to FileVault Unlock List**
+
+```bash
+sudo fdesetup add -usertoadd testlocal -user johnadmin -password Secret123!
+```
+
+---
+
+## ✅ Confirm It Works
+
+```bash
+sysadminctl -secureTokenStatus testlocal
+```
+
+---
+
+
+Despite being **documented**, the `-fullName` flag fails in recent macOS versions when passed directly. It’s likely an **undocumented parsing bug** or restriction. Apple’s tools have trended toward more **MDM-focused user creation**, and `dscl` remains the most reliable for local scripts.
+
+---
+
+To list all users who are part of the **admin group** on macOS via Terminal, run the following command:
+
+```bash
+dscl . -read /Groups/admin GroupMembership
+```
+
+### ✅ Output Example:
+
+```
+GroupMembership: root johnadmin testlocal
+```
+
+This lists all user short names who have **admin privileges**.
+
+---
+
+### 🧪 Alternative: Using `id` to Check a Specific User
+
+To see if a specific user is in the `admin` group:
+
+```bash
+id username
+```
+
+Example:
+
+```bash
+id testlocal
+```
+
+Look for `admin` in the `groups=` list (usually group `80`).
+
+---
+
+
+
