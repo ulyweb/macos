@@ -195,5 +195,11 @@ Install-Module installs the module for all users in $env:ProgramFiles\PowerShell
 > - After installation, run brew update to make sure Homebrew is up-to-date.
 >> ### Install CotEditor:
 > - Execute the following command in Terminal: ``` brew install --cask coteditor ```
->> ### Launch CotEditor:
+>> ### Install TextMate:
+> - Execute the following command in Terminal: ``` brew install --cask textmate ```
+>> ### Install Gedit:
+> - Execute the following command in Terminal: ``` brew install gedit ```
+>> ### Install ghex:
+> - Execute the following command in Terminal: ``` brew install ghex ```
+>> ### Launch CotEditor, Textmate, gedit and ghex:
 > - Once the installation completes, you'll find CotEditor in your Applications folder and can launch it like any other app.
