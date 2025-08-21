@@ -186,7 +186,7 @@ Install-Module installs the module for all users in $env:ProgramFiles\PowerShell
 
 
 ## **Installing CotEditor via Homebrew
->[INFO]
+> [!NOTE]
 > **Open Terminal:**
 > - Launch the Terminal application on your Mac (located in Applications > Utilities).
 > - 1:) -  Ensure Homebrew is installed:
