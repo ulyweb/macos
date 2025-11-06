@@ -193,6 +193,16 @@ Install-Module installs the module for all users in $env:ProgramFiles\PowerShell
 >> ### Ensure Homebrew is installed:
 > - If you don't have Homebrew, you can install it by following the instructions on the Homebrew website.
 > - After installation, run brew update to make sure Homebrew is up-to-date.
+>> ### Install Keka: A simple, free, and open-source file archiver that supports virtually every compression format (like 7z, Rar, Zip, Tar, Gzip, etc.) for both creation and extraction.
+> - Execute the following command in Terminal: ``` brew install --cask keka ```
+>> ### Install Rectangle: An intuitive, open-source window manager that allows you to snap windows to the screen's edges and corners using keyboard shortcuts, similar to the window-tiling features in Windows.
+> - Execute the following command in Terminal: ``` brew install --cask rectangle ```
+>> ### Install Visual Studio Code (VS Code): The most popular open-source, cross-platform code editor.
+> - Execute the following command in Terminal: ``` brew install --cask visual-studio-code ```
+>> ### Install iTerm2: The gold standard terminal emulator for macOS. It offers significant improvements over the default Terminal, including split panes, instant replay, customizable hotkeys.
+> - Execute the following command in Terminal: ``` brew install --cask iterm2 ```
+>> ### Install IINA: A modern, beautiful media player designed specifically for macOS. It's built on the highly regarded mpv project but features a clean, intuitive, gesture-friendly interface that feels perfectly native to your Mac. It plays virtually any video format you throw at it.
+> - Execute the following command in Terminal: ``` brew install --cask iina ```
 >> ### Install CotEditor:
 > - Execute the following command in Terminal: ``` brew install --cask coteditor ```
 >> ### Install TextMate:
