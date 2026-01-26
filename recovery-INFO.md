@@ -107,7 +107,7 @@ Guides consistently note `softwareupdate --fetch-full-installer` **downloads to 
 
 ## Need a working Sequoia URL?
 
-If you tell me the **exact version** you want (e.g., **15.7.2**), I’ll reply with a **direct Apple CDN link** you can paste into the `curl` command above. These links are listed by reputable admin sites and point **directly to Apple’s servers**—handy when `softwareupdate` is unreliable or you’re stuck in Recovery. [\[mrmacintosh.com\]](https://mrmacintosh.com/macos-sequoia-full-installer-database-download-directly-from-apple/)
+Here's **exact version** you want (e.g., **15.7.2**), I’ll reply with a **direct Apple CDN link** you can paste into the `curl` command above. These links are listed by reputable admin sites and point **directly to Apple’s servers**—handy when `softwareupdate` is unreliable or you’re stuck in Recovery. [\[mrmacintosh.com\]](https://mrmacintosh.com/macos-sequoia-full-installer-database-download-directly-from-apple/)
 
 ***
 
