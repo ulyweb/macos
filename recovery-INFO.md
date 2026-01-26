@@ -1,4 +1,4 @@
-Short answer: **No**—in **macOS Recovery** you generally **can’t** use  
+**macOS Recovery** you generally **can’t** use  
 `softwareupdate --fetch-full-installer` to pull Sequoia and put it on **/Volumes/Source**. That command is designed to run on a **booted macOS system**, and it puts the installer app into **/Applications** of the running OS—not onto an external volume. (Apple and multiple admin guides note the full‑installer workflow downloads to **/Applications**, and the flag is supported on Catalina or later while booted normally.) [\[osxdaily.com\]](https://osxdaily.com/2020/04/13/how-download-full-macos-installer-terminal/), [\[discussion....apple.com\]](https://discussions.apple.com/docs/DOC-250007895)
 
 When Safari in Recovery keeps crashing, the **most reliable Recovery‑only path** is:
@@ -35,7 +35,7 @@ diskutil eraseDisk APFS "Installer" GPT /dev/disk6
 ```bash
 curl -L --retry 5 --continue-at - \
   -o "/Volumes/Source/InstallAssistant.pkg" \
-  "https://swcdn.apple.com/content/downloads/XX/YY/ZZZZZZZZ/AAAAAA/InstallAssistant.pkg"
+  "https://swcdn.apple.com/content/downloads/47/16/089-70987-A_PWKNKEFQ1D/sjlq45liw0g5lor3a6i89vz7paml1xpq6w/InstallAssistant.pkg"
 ```
 
 *   `-L` follows redirects, `--retry` makes it more resilient, `--continue-at -` resumes if the connection drops.
@@ -115,5 +115,3 @@ If you tell me the **exact version** you want (e.g., **15.7.2**), I’ll reply w
 
 *   `softwareupdate --fetch-full-installer ...` → **works when macOS is booted**, saves to **/Applications**. **Not** the right tool inside Recovery. [\[osxdaily.com\]](https://osxdaily.com/2020/04/13/how-download-full-macos-installer-terminal/)
 *   In Recovery, use **Terminal + `curl`** to download **Apple‑hosted `InstallAssistant.pkg`** to **/Volumes/Source**, **install** it there to get the **.app**, then **`createinstallmedia`** to build your second USB. [\[support.apple.com\]](https://support.apple.com/en-us/101578), [\[apple.stac...change.com\]](https://apple.stackexchange.com/questions/478657/error-fetching-full-installer-with-the-softwareupdate-command)
-
-I’m happy to drop in the **exact `curl` line** with a current Sequoia pkg URL if you confirm the version/build you want.
