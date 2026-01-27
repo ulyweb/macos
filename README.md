@@ -377,3 +377,72 @@ And check if it was created properly and can log in.
 
 ---
 
+
+
+
+
+Wipe almost everything off the Dock at once** via Terminal, leaving only **Finder** (which cannot be removed) and **System Settings** (you can add it manually afterward).
+
+Below is the cleanest and safest method.
+
+***
+
+# ✅ Remove all Dock apps at once (reset Dock to default)
+
+This command **resets the Dock** to Apple’s bare‑minimum defaults, which includes:
+
+*   Finder (cannot be removed)
+*   App Store
+*   Safari
+*   System Settings
+*   Recent Apps section (auto‑populated)
+
+### **Terminal command:**
+
+```bash
+defaults delete com.apple.dock persistent-apps; killall Dock
+```
+
+### What this actually does
+
+*   Removes **all pinned apps** in one shot
+*   Leaves only Finder (because macOS protects it)
+*   Dock refreshes immediately
+
+***
+
+# 🔧 OPTIONAL: Remove App Store & Safari too
+
+If you want the Dock to contain **only Finder + System Settings**, run these after the reset:
+
+### **Remove App Store**
+
+```bash
+dockutil --remove 'App Store' --allhomes
+```
+
+### **Remove Safari**
+
+```bash
+dockutil --remove 'Safari' --allhomes
+```
+
+⚠️ **dockutil is not built into macOS** — you need to install it:
+
+```bash
+brew install dockutil
+```
+
+(Requires Homebrew. If you don’t want Homebrew, I can give you a manual JSON-editing method.)
+
+***
+
+# ➕ OPTIONAL: Add System Settings (if it disappears)
+
+If your dock reset didn’t keep System Settings, add it back:
+
+```bash
+dockutil --add '/System/Applications/System Settings.app'
+```
+
+
