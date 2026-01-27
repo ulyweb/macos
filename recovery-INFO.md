@@ -115,3 +115,120 @@ Here's **exact version** you want (e.g., **15.7.2**), I’ll reply with a **dire
 
 *   `softwareupdate --fetch-full-installer ...` → **works when macOS is booted**, saves to **/Applications**. **Not** the right tool inside Recovery. [\[osxdaily.com\]](https://osxdaily.com/2020/04/13/how-download-full-macos-installer-terminal/)
 *   In Recovery, use **Terminal + `curl`** to download **Apple‑hosted `InstallAssistant.pkg`** to **/Volumes/Source**, **install** it there to get the **.app**, then **`createinstallmedia`** to build your second USB. [\[support.apple.com\]](https://support.apple.com/en-us/101578), [\[apple.stac...change.com\]](https://apple.stackexchange.com/questions/478657/error-fetching-full-installer-with-the-softwareupdate-command)
+
+
+
+
+
+
+## What’s happening (why your internal SSD won’t erase or accept install)
+
+1.  **You’re booted from the internal disk you’re trying to erase.**  
+    In your `diskutil list physical` you have on **/dev/disk0**:
+
+*   `Apple_APFS_ISC` (disk0s1) — iBoot System Container
+*   *(free space \~245 GB)* — your main APFS container was deleted
+*   `Apple_APFS_Recovery` (disk0s3) — “1 True Recovery” / fallback recovery
+
+On Apple‑silicon Macs, **RecoveryOS and the iBoot System Container (ISC) live on the same physical SSD**. If you start Recovery from there, the **kernel is running from disk0**, so trying to erase **disk0** returns:
+
+> “The volume on disk0 couldn’t be unmounted because it is in use by process 0 (kernel) … -69877” — exactly what your Terminal shows. [\[discussion....apple.com\]](https://discussions.apple.com/thread/253777530), [\[macmegasite.com\]](https://macmegasite.com/2024/10/22/boot-volume-layout-and-structure-in-macos-sequoia/)
+
+2.  **Your main APFS container is missing**, so the installer can’t build the required APFS volume group (System/Data/Preboot/Recovery). That’s why the GUI shows **“Unable to set target system volume for preflight.”** This class of preflight errors appears when the target container/volumes aren’t in a valid state for Sequoia to stage the SSV (Signed System Volume). [\[macmegasite.com\]](https://macmegasite.com/2024/10/22/boot-volume-layout-and-structure-in-macos-sequoia/), [\[discussion....apple.com\]](https://discussions.apple.com/thread/254869144)
+
+3.  **USB installers and “normal” Recovery don’t help** because they still end up using internal recovery components or can’t modify the disk while it’s busy. On Apple silicon, the reliable fix when the container layout is damaged is **External Recovery (Fallback Recovery)** or **DFU Restore** to rebuild firmware + recovery + the internal disk structure. [\[support.apple.com\]](https://support.apple.com/guide/mac-help/macos-recovery-a-mac-apple-silicon-mchl82829c17/mac), [\[talk.tidbits.com\]](https://talk.tidbits.com/t/recovery-on-apple-silicon-macs/21465)
+
+***
+
+## Two proven ways to fix it
+
+### Option A — Recreate the missing APFS container from Recovery *without* erasing ISC/1TR
+
+If you are in **External Recovery/Fallback Recovery** (see how to get there below), you can add back a fresh APFS container into the free space **between** the ISC (s1) and the Recovery (s3), then install macOS to it.
+
+**Why this works:** Apple silicon treats the **ISC (s1)** and **Apple\_APFS\_Recovery (s3)** as protected, system‑critical partitions; you don’t erase them. You only need to restore the **main APFS container** in the free space. Apple techs commonly use a `diskutil addPartition` flow for this exact scenario. [\[discussion....apple.com\]](https://discussions.apple.com/thread/253777530)
+
+**Steps (from Recovery > Utilities > Terminal):**
+
+```bash
+# 1) Confirm internal disk number
+diskutil list
+
+# You should see disk0s1 = Apple_APFS_ISC, large free space, disk0s3 = Apple_APFS_Recovery
+
+# 2) Create a new APFS container filling the free space AFTER disk0s1
+#    This adds a container and creates an APFS volume named "Macintosh HD".
+#    Adjust disk identifier if your ISC isn't disk0s1 (rare).
+diskutil addPartition disk0s1 APFS "Macintosh HD" 0
+
+# 3) Quit Terminal, then run "Reinstall macOS" and select the new "Macintosh HD".
+```
+
+If the command errors, run **Disk Utility > View > Show All Devices**, select the **new container**, run **First Aid**, quit, then retry the installer. [\[discussion....apple.com\]](https://discussions.apple.com/thread/253777530)
+
+> If you **aren’t** in Fallback/External Recovery, `disk0` may still be “busy”. See the next box to ensure you are.
+
+***
+
+### How to enter **Fallback Recovery (1TR)** so `disk0` isn’t “in use”
+
+Fallback Recovery is a second, independent copy of RecoveryOS used **when normal Recovery is damaged or can’t service the internal disk**.
+
+**Enter Fallback Recovery on Apple silicon:**
+
+1.  Shut down the Mac completely.
+2.  **Press the power button twice quickly, then hold it on the second press** until you see *Loading startup options…*
+3.  Choose **Options** → Continue (you’re now in Fallback Recovery). [\[iboysoft.com\]](https://iboysoft.com/wiki/fallback-recovery-os-mode.html), [\[forums.macrumors.com\]](https://forums.macrumors.com/threads/omg-hidden-m1-boot-mode.2288213/), [\[eclecticlight.co\]](https://eclecticlight.co/2023/03/02/recovery-on-apple-silicon-macs-has-changed-again/)
+
+Once there, repeat **Option A** above or try a standard **Reinstall macOS** to the newly created **Macintosh HD**.
+
+***
+
+### Option B — **DFU Restore** (the “100% reset” that rebuilds firmware + recovery + disk)
+
+If Option A still fails, do a **DFU Restore** from another Mac using **Apple Configurator 2**. This:
+
+*   Reinstalls firmware
+*   Recreates RecoveryOS and the correct internal partitioning
+*   Lays down a fresh macOS
+
+This is Apple’s official remedy when the internal containering/recovery is corrupted. [\[talk.tidbits.com\]](https://talk.tidbits.com/t/recovery-on-apple-silicon-macs/21465)
+
+**What you need**
+
+*   Another Mac (Intel or Apple silicon) with **Apple Configurator 2**
+*   USB‑C ↔ USB‑C (or USB‑A↔C) data cable
+*   Stable internet on the working Mac
+
+**High‑level steps**
+
+1.  Install/open **Apple Configurator 2** on the working Mac.
+2.  Connect the cable to your MacBook Air (the one to fix).
+3.  Put the Air into **DFU mode** (button sequence differs from Recovery; follow Configurator’s prompts).
+4.  In Configurator: **Restore** (you can try **Revive** first, but Restore is the clean sweep). [\[support.apple.com\]](https://support.apple.com/guide/mac-help/macos-recovery-a-mac-apple-silicon-mchl82829c17/mac), [\[talk.tidbits.com\]](https://talk.tidbits.com/t/recovery-on-apple-silicon-macs/21465)
+
+***
+
+## Why the GUI installer says “Unable to set target system volume for preflight”
+
+Sequoia needs to create an **APFS volume group** (System + Data + Preboot + Recovery + VM) inside a valid **APFS container**. Because your main container was deleted (only ISC and 1TR containers remain), the installer can’t “preflight” (stage the SSV, cryptexes, etc.), so it blocks selection of the internal disk. Re‑creating the container (Option A) or doing a DFU Restore (Option B) resolves this. [\[macmegasite.com\]](https://macmegasite.com/2024/10/22/boot-volume-layout-and-structure-in-macos-sequoia/)
+
+***
+
+## What **not** to do
+
+*   Don’t try to `eraseDisk` **/dev/disk0** while you’re booted from internal RecoveryOS—**it will always be “in use by kernel”**. Use Fallback Recovery or DFU. [\[discussion....apple.com\]](https://discussions.apple.com/thread/253777530)
+*   Don’t delete `Apple_APFS_ISC` or `Apple_APFS_Recovery`—they’re required for Apple‑silicon secure boot and recovery. If they’re damaged/missing, **DFU Restore** is the fix. [\[macmegasite.com\]](https://macmegasite.com/2024/10/22/boot-volume-layout-and-structure-in-macos-sequoia/)
+
+***
+
+## Based on your screenshots, here’s the fastest path for you
+
+1.  Boot into **Fallback Recovery** (double‑press, then hold Power). [\[iboysoft.com\]](https://iboysoft.com/wiki/fallback-recovery-os-mode.html)
+2.  Open **Terminal** → run the `diskutil addPartition` command shown above to recreate the main APFS container + “Macintosh HD”. [\[discussion....apple.com\]](https://discussions.apple.com/thread/253777530)
+3.  Quit Terminal → **Reinstall macOS Sequoia** to **Macintosh HD**. [\[support.apple.com\]](https://support.apple.com/guide/mac-help/macos-recovery-a-mac-apple-silicon-mchl82829c17/mac)
+
+If any step fails, go straight to **Option B: DFU Restore** with Apple Configurator 2. It’s the sure, Apple‑supported “factory fresh” path that also repairs firmware and recovery. [\[talk.tidbits.com\]](https://talk.tidbits.com/t/recovery-on-apple-silicon-macs/21465)
+
+***
+
