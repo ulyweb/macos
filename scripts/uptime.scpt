@@ -1,6 +1,6 @@
--- macOS Uptime Report — AppleScript (robust, full script, fixed reserved 'host' var)
--- Features: Uptime (weeks + d/h/m/s), CPU, Memory, Load, Clipboard, Log save + Reveal.
--- No admin rights required.
+-- Uptime Report v4 — AppleScript
+-- Fixes: compile error (no 'does not match'), robust numeric check, matches Terminal `uptime`.
+-- Features: Uptime (weeks + d/h/m/s), CPU, Memory, Load, Clipboard, Log save + Reveal, Raw `uptime`.
 
 on run
   -- ======= Configuration =======
@@ -13,19 +13,21 @@ on run
   try
     ----------------------------------------------------------------------
     -- 1) Get boot epoch from 'sysctl -n kern.boottime' robustly
-    --    Example sysctl output: { sec = 1739276400, usec = 0 } Fri Feb 12 11:00:00 2026
+    -- Example: { sec = 1770315194, usec = 18409 } Thu Feb  5 10:13:14 2026
+    -- We take the 4th field (seconds) to avoid matching 'usec'.
     ----------------------------------------------------------------------
-    set bootEpochStr to do shell script "/usr/sbin/sysctl -n kern.boottime 2>/dev/null | /usr/bin/sed -E 's/.*sec = ([0-9]+).*/\\1/'"
-    if bootEpochStr is "" then error "Unable to parse kern.boottime."
-    set bootEpoch to bootEpochStr as integer
-    if bootEpoch ≤ 0 then error "Invalid boot epoch returned."
+    set bootEpochStr to do shell script "/usr/sbin/sysctl -n kern.boottime 2>/dev/null | /usr/bin/awk -F'[ ,]+' '{print $4}'"
+    if bootEpochStr is "" then error "Unable to parse kern.boottime (empty)."
+    if my matchesRegex(bootEpochStr, "^[0-9]+$") is false then error "kern.boottime not numeric: " & bootEpochStr
+    set bootEpoch to (bootEpochStr as integer)
+    if bootEpoch < 978307200 then error "Suspicious boot epoch: " & bootEpochStr -- earlier than 2001-01-01
 
     ----------------------------------------------------------------------
     -- 2) Compute uptime seconds
     ----------------------------------------------------------------------
     set nowEpoch to (do shell script "/bin/date +%s") as integer
     set uptimeSeconds to nowEpoch - bootEpoch
-    if uptimeSeconds < 0 then set uptimeSeconds to 0
+    if uptimeSeconds < 0 then error "Clock anomaly: uptime negative."
 
     ----------------------------------------------------------------------
     -- 3) Break uptime into weeks/days/hours/minutes/seconds
@@ -40,7 +42,7 @@ on run
     set rdays to (days mod 7)
 
     ----------------------------------------------------------------------
-    -- 4) Format human-readable times (Perl/POSIX strftime; avoids `date -r`)
+    -- 4) Human-readable times (Perl/POSIX strftime; avoids `date -r` pitfalls)
     ----------------------------------------------------------------------
     set nowStr to do shell script "/bin/date \"+%a %b %d, %Y %H:%M:%S %Z\""
     set lastBootStr to do shell script ("/usr/bin/perl -MPOSIX=strftime -e 'print strftime(\"%a %b %d, %Y %H:%M:%S %Z\", localtime(" & bootEpoch & "))'")
@@ -53,16 +55,16 @@ on run
 
     ----------------------------------------------------------------------
     -- 6) CPU usage (user/sys/idle) and Memory usage (PhysMem + Swap)
-    --    Parse from 'top -l 1 -n 0' and 'sysctl vm.swapusage'
     ----------------------------------------------------------------------
     set cpuLine to do shell script "/usr/bin/top -l 1 -n 0 | /usr/bin/awk -F': ' '/CPU usage/ {print $2; exit}' 2>/dev/null || echo \"n/a\""
     set physMemLine to do shell script "/usr/bin/top -l 1 -n 0 | /usr/bin/awk -F': ' '/PhysMem/ {print $2; exit}' 2>/dev/null || echo \"n/a\""
     set swapLine to do shell script "/usr/sbin/sysctl vm.swapusage 2>/dev/null | /usr/bin/sed -E 's/^vm\\.swapusage: //g' || echo \"n/a\""
 
     ----------------------------------------------------------------------
-    -- 7) Logged-in user count
+    -- 7) Logged-in user count & raw `uptime` line for cross-check
     ----------------------------------------------------------------------
     set userCount to do shell script "/usr/bin/who | /usr/bin/wc -l | /usr/bin/tr -d ' '"
+    set rawUptime to do shell script "/usr/bin/uptime"
 
     ----------------------------------------------------------------------
     -- 8) Compose report
@@ -71,7 +73,7 @@ on run
     set verbose to my joinVerbose(days, hours, mins, secs)
 
     set report to "🖥️ macOS Uptime Report" & return & ¬
-      "────────────────────────────" & return & ¬
+      "────────────────────────────────────────" & return & ¬
       "Current Time     : " & nowStr & return & ¬
       "Last Boot Time   : " & lastBootStr & return & ¬
       "Uptime (weeks)   : " & weeks & "w " & rdays & "d" & return & ¬
@@ -81,20 +83,18 @@ on run
       "Load Averages    : 1m=" & la1 & "  5m=" & la5 & "  15m=" & la15 & return & ¬
       "CPU Usage        : " & cpuLine & return & ¬
       "Memory (PhysMem) : " & physMemLine & return & ¬
-      "Memory (Swap)    : " & swapLine
+      "Memory (Swap)    : " & swapLine & return & ¬
+      "Raw 'uptime'     : " & rawUptime
 
     ----------------------------------------------------------------------
     -- 9) Clipboard + optional log save
     ----------------------------------------------------------------------
-    if copyReportToClipboard then
-      set the clipboard to report
-    end if
+    if copyReportToClipboard then set the clipboard to report
 
     set extraNote to ""
     set savedPath to ""
     if saveLogToFile then
       set ts to do shell script "/bin/date +%Y%m%d-%H%M%S"
-      -- Avoid reserved word 'host' — use hostName instead
       set hostName to do shell script "/usr/sbin/scutil --get LocalHostName 2>/dev/null || /bin/hostname -s"
       set logDir to preferredLogDir
       try
@@ -112,16 +112,14 @@ on run
     -- 10) Show dialog; offer Reveal Log if we saved a file
     ----------------------------------------------------------------------
     if saveLogToFile then
-      set dlg to display dialog (report & extraNote) buttons {"OK", "Reveal Log"} default button "OK" with title "Uptime"
-      if button returned of dlg is "Reveal Log" then
-        do shell script "/usr/bin/open -R " & quoted form of savedPath
-      end if
+      set dlg to display dialog (report & extraNote) buttons {"OK", "Reveal Log"} default button "OK" with title "Uptime Report v4"
+      if button returned of dlg is "Reveal Log" then do shell script "/usr/bin/open -R " & quoted form of savedPath
     else
-      display dialog report buttons {"OK"} default button "OK" with title "Uptime"
+      display dialog report buttons {"OK"} default button "OK" with title "Uptime Report v4"
     end if
 
   on error errMsg number errNum
-    display dialog "Uptime check failed." & return & errMsg & " (err " & errNum & ")" buttons {"OK"} default button "OK" with title "Uptime"
+    display dialog "Uptime check failed." & return & errMsg & " (err " & errNum & ")" buttons {"OK"} default button "OK" with title "Uptime Report v4"
   end try
 end run
 
@@ -151,7 +149,7 @@ end joinVerbose
 
 on first3(s)
   -- Return first three whitespace‑separated tokens; fallback to "n/a"
-  set toks to my splitBy(s, space)
+  set toks to my splitBy(s, " ")
   set a to "n/a"
   set b to "n/a"
   set c to "n/a"
@@ -169,3 +167,13 @@ on splitBy(t, delim)
   set AppleScript's text item delimiters to oldTID
   return arr
 end splitBy
+
+-- POSIX ERE check via grep -E, returns true if s matches pattern
+on matchesRegex(s, pattern)
+  try
+    do shell script "/usr/bin/printf %s " & quoted form of s & " | /usr/bin/grep -Eq " & quoted form of pattern
+    return true
+  on error
+    return false
+  end try
+end matchesRegex
