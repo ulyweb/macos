@@ -40,6 +40,6 @@ echo -e "USERNAME\tUUID\tSTATUS" && diskutil apfs listUsers / -plist | grep -A1 
 * Reboot the Mac: Have the user type their password at the very first screen (the black screen with the Apple logo).
 * Confirm: If they get to the desktop, the hand-off is a success.
 
-> [!TIP] If the user is a Standard User, always perform Phase 4 via a Jamf Policy or while you are still logged into the Admin account, as they won't have the permissions to delete you!
-Do you need the Jamf Pro Smart Group criteria to automatically track these M4 Macs once they hit the "Completed" status in your portal?
+> [!tip]
+> If the user is a Standard User, make sure you run make admin, Phase 4 required you to logged into the Admin account, as they won't have the permissions to delete you!
 
