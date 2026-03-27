@@ -21,7 +21,7 @@
 * Token Generation: Because Phase 1 confirmed the Bootstrap Token, macOS automatically grants this user a Secure Token the moment they log in.
 
 ## Phase 3: The "Point of No Return" Verification
-Before you delete your Admin account, run your Pro Table Command to ensure the User is a "Volume Owner":
+Before you delete your Admin account, run the command below to ensure the User is a "Volume Owner":
 
 * Run Table Check:
 ````
