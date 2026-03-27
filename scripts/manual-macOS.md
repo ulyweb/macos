@@ -65,6 +65,10 @@ echo "=== 1. FILEVAULT USERS (Users who CAN log in) ==="; sudo fdesetup list -ex
 ````
 
 ````
+echo "--- SECURE TOKEN HOLDERS (CLEAN LIST) ---"; diskutil apfs listUsers / -plist | grep -A1 "UUID" | grep "string" | sed 's/.*>\(.*\)<.*/\1/' | while read -r uuid; do name=$(dscl . -search /Users GeneratedUID "$uuid" | awk '{print $1}'); if [ -z "$name" ]; then echo "ID: $uuid (System/Internal)"; else echo "User: $name | ID: $uuid"; fi; done
+````
+
+````
 sysadminctl -secureTokenStatus Username
 sudo sysadminctl interactive -secureTokenOn  username
 Jamf recon
