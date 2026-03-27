@@ -57,7 +57,7 @@ read -p "Enter Primary Username: " USER; echo "--- Verification for: $USER ---";
 ````
 
 ````
-diskutil apfs listUsers / -plist | grep -A1 "UUID" | grep "<string>" | sed 's/[^>]*>\([^<]*\)<.*/\1/'"
+diskutil apfs listUsers / -plist | grep -A1 "UUID" | grep "<string>" | sed 's/[^>]*>\([^<]*\)<.*/\1/'
 ````
 
 ````
