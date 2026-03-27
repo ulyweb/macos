@@ -61,6 +61,10 @@ echo "--- ALL AUTHORIZED FILEVAULT USERS ---"; sudo fdesetup list; echo ""; echo
 ````
 
 ````
+echo "=== 1. FILEVAULT USERS (Users who CAN log in) ==="; sudo fdesetup list -extended; echo ""; echo "=== 2. DISK OWNERS (Users with Secure Tokens) ==="; diskutil apfs listUsers /
+````
+
+````
 sysadminctl -secureTokenStatus Username
 sudo sysadminctl interactive -secureTokenOn  username
 Jamf recon
