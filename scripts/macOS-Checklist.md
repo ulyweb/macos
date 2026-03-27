@@ -5,7 +5,11 @@
 * First Login: Admin (you) logs in first.
 * Install Apps: Install Microsoft 365, Zoom, Box, Printers, etc.
 * Escrow Check: Verify the Mac sent its "Master Key" to Jamf.
-* Command: sudo profiles status -type bootstraptoken (Must say YES for Escrow).
+* Command:
+>```
+>sudo profiles status -type bootstraptoken
+>```
+>**(Must say YES for Escrow).**
 
 ## Phase 2: Primary User Hand-off (The "Setup")
 
@@ -29,11 +33,20 @@ echo -e "USERNAME\tUUID\tSTATUS" && diskutil apfs listUsers / -plist | grep -A1 
 ## Phase 4: Cleaning & Syncing
 
 * Delete Admin: Remove your setup account securely so the user is the only one left.
-* Command: sudo sysadminctl -deleteUser [YourAdminName] -secure
+* Command:
+>```
+>sudo sysadminctl -deleteUser [YourAdminName] -secure
+>```
 * Update Preboot: Tell the disk that the Admin is gone and the User is the new boss.
-* Command: diskutil apfs updatePreboot /
+* Command:
+>```
+>diskutil apfs updatePreboot /
+>```
 * Sync Jamf: Force the Mac to tell the Jamf Pro Portal that the owner is set and encrypted.
-* Command: sudo jamf recon
+* Command:
+>```
+>sudo jamf recon
+>```
 
 ## Phase 5: The "Proof" Restart
 
