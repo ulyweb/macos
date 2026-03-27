@@ -41,26 +41,28 @@ the username is: _jssadmin
 and the password: grab it from the Jamf Pro Portal.
 
 
-
-sysadminctl -secureTokenStatus ufrancisco
+````
+sysadminctl -secureTokenStatus Username
 sudo profiles status -type bootstraptoken
-
 diskutil apfs listUsers /
 sudo fdesetup list
+````
 
-``
+````
 USER="usernameHERE"; echo "--- FileVault Users ---"; sudo fdesetup list | grep "$USER"; echo "--- APFS Tokens ---"; diskutil apfs listUsers / | grep -i $(sudo fdesetup list | grep "$USER" | awk -F',' '{print $NF}')
-``
-``
+````
+
+````
 read -p "Enter Primary Username: " USER; echo "--- Verification for: $USER ---"; UUID=$(sudo fdesetup list | grep -i "$USER" | awk -F',' '{print $NF}'); if [ -z "$UUID" ]; then echo "Error: User not found in FileVault list."; else echo "FileVault UUID: $UUID"; echo "--- APFS Token Match ---"; diskutil apfs listUsers / | grep -i "$UUID"; fi
-``
+````
 
-
-sysadminctl -secureTokenStatus fRaissi
-sudo sysadminctl interactive -secureTokenOn  fraissi
-
+````
+sysadminctl -secureTokenStatus Username
+sudo sysadminctl interactive -secureTokenOn  username
 Jamf recon
+````
 
 to list users type in:
+````
 Jamf listUsers
-
+````
