@@ -37,6 +37,21 @@ echo -e "USERNAME\tUUID\tSTATUS" && diskutil apfs listUsers / -plist | grep -A1 
 ### **Phase 4: Admin Removal & Final Sync**
 
 * **Action:** Delete the Staging Admin account (sysadminctl -deleteUser) and run sudo jamf recon.
+* * Delete Admin: Remove your setup account securely so the user is the only one left.
+* Command:
+>```
+>sudo sysadminctl -deleteUser [YourAdminName] -secure
+>```
+* Update Preboot: Tell the disk that the Admin is gone and the User is the new boss.
+* Command:
+>```
+>diskutil apfs updatePreboot /
+>```
+* Sync Jamf: Force the Mac to tell the Jamf Pro Portal that the owner is set and encrypted.
+* Command:
+>```
+>sudo jamf recon
+>```
 * **The "Why":**
 * **Security Best Practice:** We remove the local admin so there is only one authorized user on the device, reducing the "attack surface."
    * **Preboot Update:** Running ``diskutil apfs updatePreboot /`` ensures the macOS login screen (before the OS even loads) knows the Admin is gone and only shows the Primary User.
