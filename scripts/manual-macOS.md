@@ -57,7 +57,7 @@ read -p "Enter Primary Username: " USER; echo "--- Verification for: $USER ---";
 ````
 
 ````
-echo "--- ALL AUTHORIZED FILEVAULT USERS ---"; sudo fdesetup list; echo ""; echo "--- ALL ACTIVE APFS SECURE TOKENS ---"; diskutil apfs listUsers / | grep -E "User:|UUID:"
+diskutil apfs listUsers / -plist | grep -A1 "UUID" | grep "<string>" | sed 's/[^>]*>\([^<]*\)<.*/\1/'"
 ````
 
 ````
