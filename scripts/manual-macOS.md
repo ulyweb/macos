@@ -57,6 +57,10 @@ read -p "Enter Primary Username: " USER; echo "--- Verification for: $USER ---";
 ````
 
 ````
+echo "--- ALL AUTHORIZED FILEVAULT USERS ---"; sudo fdesetup list; echo ""; echo "--- ALL ACTIVE APFS SECURE TOKENS ---"; diskutil apfs listUsers / | grep -E "User:|UUID:"
+````
+
+````
 sysadminctl -secureTokenStatus Username
 sudo sysadminctl interactive -secureTokenOn  username
 Jamf recon
